@@ -39,9 +39,6 @@ class _SplashScreenState extends State<SplashScreen> {
             "assets/NOTE BOOK.gif",
             width: MediaQuery.of(context).size.width * 0.8,
           )),
-          CircularProgressIndicator(
-            color: Colors.black,
-          )
         ],
       ),
     );

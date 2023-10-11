@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:todo_app/view/description_screen.dart/description_screen.dart';
 
 class NoteCard extends StatefulWidget {
@@ -75,7 +76,7 @@ class _NoteCardState extends State<NoteCard> {
                     ],
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
+                    width: MediaQuery.of(context).size.width * 0.9,
                     child: Text(widget.description,
                         textAlign: TextAlign.justify,
                         maxLines: 4,
@@ -85,9 +86,33 @@ class _NoteCardState extends State<NoteCard> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      widget.date,
-                      style: TextStyle(color: Colors.black, fontSize: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              widget.date,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  String message = widget.description;
+                                  String subject = widget.title;
+                                  Share.share(message, subject: subject);
+                                },
+                                icon: Icon(Icons.share))
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ],

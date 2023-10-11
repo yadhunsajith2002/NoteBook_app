@@ -146,11 +146,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    isEditing ? 'Edit Note' : 'Add a New Note',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                  Center(
+                    child: Text(
+                      isEditing ? 'Edit Note' : 'Add a New Note',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   SizedBox(height: 16.0),
@@ -198,39 +200,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 5,
-                    children: colorOptions.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final color = entry.value;
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedColor = color;
-                            selectedColorIndex = index;
-                            newNote.color = color.value;
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Container(
-                            width: index == selectedColorIndex ? 50 : 40,
-                            height: index == selectedColorIndex ? 50 : 40,
-                            decoration: BoxDecoration(
-                              color: color,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                width: 3,
-                                color: index == selectedColorIndex
-                                    ? Colors.grey.shade400
-                                    : Colors.transparent,
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    height: 80,
+                    child: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: 5,
+                      children: colorOptions.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final color = entry.value;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedColor = color;
+                              selectedColorIndex = index;
+                              newNote.color = color.value;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              width: index == selectedColorIndex ? 50 : 40,
+                              height: index == selectedColorIndex ? 50 : 40,
+                              decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
+                    ),
                   ),
                   SizedBox(height: 16.0),
                   Row(
@@ -253,18 +255,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.of(context).pop();
                           } else {
                             Navigator.of(context).pop();
-                            showDialog(
-                              context: ctx,
-                              builder: (context) {
-                                return AlertDialog();
-                              },
-                            );
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30),
+                                        topRight: Radius.circular(30))),
+                                padding: EdgeInsets.all(20),
+                                backgroundColor: Colors.grey,
+                                content: Center(
+                                    child: Text(
+                                  "Please add full details",
+                                  style: TextStyle(fontSize: 18),
+                                ))));
                           }
                         },
                         child: Text(isEditing ? 'Save' : 'Add'),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 60,
                       ),
                       ElevatedButton(
                         style: ButtonStyle(
