@@ -1,4 +1,4 @@
-# todo_app
+# Notes saving app using Hive Database
 
 A new Flutter project.
 
