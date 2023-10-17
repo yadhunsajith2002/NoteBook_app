@@ -83,18 +83,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 final note = _notes[index];
                 final date = dateFormatter.format(note.date.toLocal());
                 return NoteCard(
-                    onEditPressed: () {
-                      existingNoteIndex = index;
-                      _addOrEditNote(context, existingNote: note);
-                    },
-                    onDeletePressed: () async {
-                      await _noteController.deleteNote(index);
-                      _loadNotes();
-                    },
-                    description: note.description,
-                    title: note.title,
-                    date: date,
-                    color: note.color);
+                  onEditPressed: () {
+                    existingNoteIndex = index;
+                    _addOrEditNote(context, existingNote: note);
+                  },
+                  onDeletePressed: () async {
+                    await _noteController.deleteNote(index);
+                    _loadNotes();
+                  },
+                  description: note.description,
+                  title: note.title,
+                  date: date,
+                  color: note.color,
+                  onRightslide: (p0) async {
+                    await _noteController.deleteNote(index);
+                    _loadNotes();
+                  },
+                  onLeftslide: (p0) {
+                    existingNoteIndex = index;
+                    _addOrEditNote(context, existingNote: note);
+                  },
+                );
               },
             ),
       floatingActionButton: FloatingActionButton(
