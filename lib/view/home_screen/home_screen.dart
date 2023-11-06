@@ -79,9 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
           : ListView.builder(
               itemCount: _notes.length,
               itemBuilder: (context, index) {
-                final dateFormatter = DateFormat('dd-MM-yyyy');
                 final note = _notes[index];
-                final date = dateFormatter.format(note.date.toLocal());
+                final date = DateFormat.yMMMEd().format(note.date);
                 return NoteCard(
                   onEditPressed: () {
                     existingNoteIndex = index;
