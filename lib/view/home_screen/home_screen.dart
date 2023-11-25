@@ -37,36 +37,45 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadNotes() async {
     final notes = await _noteController.getNotes();
     setState(() {
-      _notes = notes;
+      _notes = notes.reversed.toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        leading: Icon(
-          Icons.edit_outlined,
-          color: Colors.black,
-        ),
         elevation: 2,
         centerTitle: true,
-        title: RichText(
-            text: TextSpan(children: [
-          TextSpan(
-              text: "Note",
-              style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold)),
-          TextSpan(
-              text: " Book",
-              style: GoogleFonts.poppins(
-                  color: Colors.grey,
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400))
-        ])),
-        backgroundColor: Colors.white,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                      text: "Note",
+                      style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: " Book",
+                      style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400))
+                ],
+              ),
+            ),
+            Icon(
+              Icons.edit_outlined,
+              color: Colors.black,
+            ),
+          ],
+        ),
+        backgroundColor: Colors.black,
       ),
       body: _notes.isEmpty
           ? Center(
@@ -106,12 +115,15 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white54,
         onPressed: () {
           existingNoteIndex = -1;
           _addOrEditNote(context);
         },
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
     );
   }
@@ -202,8 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: AbsorbPointer(
                       child: TextField(
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Date (dd-MM-yyyy)'),
+                            border: OutlineInputBorder(), labelText: 'Date '),
                         controller: _dateController,
                       ),
                     ),
@@ -248,6 +259,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       ElevatedButton(
                         style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStatePropertyAll(Colors.white),
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.black)),
                         onPressed: () async {
@@ -269,10 +282,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         topLeft: Radius.circular(30),
                                         topRight: Radius.circular(30))),
                                 padding: EdgeInsets.all(20),
-                                backgroundColor: Colors.grey,
+                                backgroundColor: Colors.grey.shade300,
                                 content: Center(
                                     child: Text(
-                                  "Please add full details",
+                                  "Please add  details",
                                   style: TextStyle(fontSize: 18),
                                 ))));
                           }
@@ -284,6 +297,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       ElevatedButton(
                         style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStatePropertyAll(Colors.white),
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.black)),
                         onPressed: () async {

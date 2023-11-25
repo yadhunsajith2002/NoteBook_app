@@ -22,7 +22,7 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: widget.color,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
@@ -30,14 +30,14 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
           },
           icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(widget.title,
             style: GoogleFonts.poppins(
-                color: Colors.black,
+                color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold)),
       ),
@@ -45,10 +45,13 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Column(
           children: [
+            SizedBox(
+              height: 10,
+            ),
             Text(widget.description,
                 textAlign: TextAlign.justify,
                 style: GoogleFonts.poppins(
-                    color: Colors.grey.shade800, fontSize: 16)),
+                    color: Colors.grey.shade300, fontSize: 16)),
           ],
         ),
       ),

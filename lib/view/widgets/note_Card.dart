@@ -85,16 +85,24 @@ class _NoteCardState extends State<NoteCard> {
                         Text(
                           widget.title,
                           style: TextStyle(
-                              fontSize: 23, fontWeight: FontWeight.bold),
+                              color: Colors.black,
+                              fontSize: 23,
+                              fontWeight: FontWeight.bold),
                         ),
                         Row(
                           children: [
                             IconButton(
                               onPressed: widget.onEditPressed,
-                              icon: Icon(Icons.edit),
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.black,
+                              ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.delete),
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.black,
+                              ),
                               onPressed: widget.onDeletePressed,
                             ),
                           ],
@@ -135,7 +143,10 @@ class _NoteCardState extends State<NoteCard> {
                                     String subject = widget.title;
                                     Share.share(message, subject: subject);
                                   },
-                                  icon: Icon(Icons.share))
+                                  icon: Icon(
+                                    Icons.share,
+                                    color: Colors.black,
+                                  ))
                             ],
                           ),
                         ],
