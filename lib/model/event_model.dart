@@ -16,16 +16,22 @@ class Note extends HiveObject {
   @HiveField(3)
   late int color;
 
+  @HiveField(4) // Add this line for the category field
+  late String category;
+
   Note({
     required this.title,
     required this.description,
     required this.date,
     required this.color,
+    required this.category, // Add this line to the constructor
   });
+
   Note.copy(Note other) {
     title = other.title;
     description = other.description;
     date = other.date;
     color = other.color;
+    category = other.category; // Add this line to the copy constructor
   }
 }
