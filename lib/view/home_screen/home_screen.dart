@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/controller/note_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/controller/note_controller/note_controller.dart';
 import 'package:todo_app/model/event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -12,17 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final NoteController _noteController = NoteController();
-  late List<Note> _notes = [];
-  int existingNoteIndex = -1;
-
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
 
   Color selectedColor = Colors.grey;
-  String selectedCategory = ""; // Initially empty category
 
   List<Color> colorOptions = [
     Colors.grey,
@@ -33,34 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadNotes();
+    context.read<NoteController>().loadNotes();
   }
-
-  Future<void> _loadNotes() async {
-    final categories = _noteController.getDistinctCategories();
-
-    if (selectedCategory.isNotEmpty && !categories.contains(selectedCategory)) {
-      // If the selected category is not in the list, set it to empty
-      selectedCategory = "";
-    }
-
-    if (selectedCategory.isEmpty) {
-      final notes = await _noteController.getNotes();
-      setState(() {
-        _notes = notes.reversed.toList();
-      });
-    } else {
-      final notes = await _noteController.getNotesByCategory(selectedCategory);
-      setState(() {
-        _notes = notes.reversed.toList();
-      });
-    }
-  }
-
-  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    print("build");
+    var providerWatch = context.watch<NoteController>();
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -95,87 +70,63 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Colors.black,
       ),
-      body: _notes.isEmpty
-          ? Center(
-              child: Text('No notes yet. Add one!',
-                  style: GoogleFonts.poppins(
+      body: Consumer<NoteController>(
+        builder: (context, providerWatch, _) {
+          return providerWatch.notes.isEmpty
+              ? Center(
+                  child: Text(
+                    'No notes yet. Add one!',
+                    style: GoogleFonts.poppins(
                       color: Colors.grey,
                       fontSize: 20,
-                      fontWeight: FontWeight.w400)),
-            )
-          : Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  height: 50,
-                  child: ListView.builder(
-                    itemCount: _noteController.getDistinctCategories().length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedCategory = _noteController
-                                  .getDistinctCategories()[index];
-                              selectedIndex = index;
-                              _loadNotes();
-                            });
-                          },
-                          child: Chip(
-                            backgroundColor:
-                                selectedIndex == index ? Colors.grey : null,
-                            label: Text(
-                                _noteController.getDistinctCategories()[index]),
-                          ),
-                        ),
-                      );
-                    },
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _notes.length,
-                    itemBuilder: (context, index) {
-                      final note = _notes[index];
-                      final date = DateFormat.yMMMEd().format(note.date);
-                      return NoteCard(
-                        onEditPressed: () {
-                          existingNoteIndex = index;
-                          _addOrEditNote(context, existingNote: note);
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: providerWatch.notes.length,
+                        itemBuilder: (context, index) {
+                          final note = providerWatch.notes[index];
+                          final date = DateFormat.yMMMEd().format(note.date);
+                          return NoteCard(
+                            onEditPressed: () {
+                              providerWatch.existingNoteIndex = index;
+                              _addOrEditNote(context, existingNote: note);
+                            },
+                            onDeletePressed: () async {
+                              await providerWatch.deleteNote(index);
+                              providerWatch.loadNotes();
+                            },
+                            description: note.description,
+                            title: note.title,
+                            date: date,
+                            color: note.color,
+                            onRightslide: (details) async {
+                              await providerWatch.deleteNote(index);
+                              providerWatch.loadNotes();
+                            },
+                            onLeftslide: (details) {
+                              providerWatch.existingNoteIndex = index;
+                              _addOrEditNote(context, existingNote: note);
+                            },
+                          );
                         },
-                        onDeletePressed: () async {
-                          await _noteController.deleteNote(index);
-                          _loadNotes();
-                        },
-                        description: note.description,
-                        title: note.title,
-                        date: date,
-                        color: note.color,
-                        onRightslide: (details) async {
-                          await _noteController.deleteNote(index);
-                          _loadNotes();
-                        },
-                        onLeftslide: (details) {
-                          existingNoteIndex = index;
-                          _addOrEditNote(context, existingNote: note);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+                      ),
+                    ),
+                  ],
+                );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white54,
         onPressed: () {
-          existingNoteIndex = -1;
+          providerWatch.existingNoteIndex = -1;
           _addOrEditNote(context);
         },
         child: Icon(
@@ -187,6 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addOrEditNote(BuildContext ctx, {Note? existingNote}) async {
+    var providerRead = context.read<NoteController>();
+    // var providerwatch = context.watch<NoteController>();
+
     final isEditing = existingNote != null;
     final newNote = isEditing
         ? Note.copy(existingNote)
@@ -195,15 +149,12 @@ class _HomeScreenState extends State<HomeScreen> {
             description: '',
             date: DateTime.now(),
             color: selectedColor.value,
-            category:
-                selectedCategory, // Updated to use selectedCategory directly
           );
     final dateFormatter = DateFormat('dd-MM-yyyy');
     _titleController.text = newNote.title;
     _descriptionController.text = newNote.description;
     _dateController.text =
         isEditing ? dateFormatter.format(newNote.date.toLocal()) : '';
-    _categoryController.text = selectedCategory;
 
     int selectedColorIndex =
         isEditing ? colorOptions.indexOf(selectedColor) : -1;
@@ -227,13 +178,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Center(
-                      child: Text(
-                    isEditing ? 'Edit Note' : 'Add a New Note',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                    child: Text(
+                      isEditing ? 'Edit Note' : 'Add a New Note',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  )),
+                  ),
                   SizedBox(height: 16.0),
                   TextField(
                     decoration: InputDecoration(
@@ -281,17 +233,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   SizedBox(height: 15),
-                  TextField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(), labelText: 'Category'),
-                    controller: _categoryController,
-                    onChanged: (value) {
-                      setState(() {
-                        newNote.category = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: 15),
                   Container(
                     height: 80,
                     child: Wrap(
@@ -311,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Container(
-                              width: index == selectedColorIndex ? 50 : 40,
+                              width: index == selectedColor ? 50 : 40,
                               height: index == selectedColorIndex ? 50 : 40,
                               decoration: BoxDecoration(
                                 color: color,
@@ -337,23 +278,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: () async {
                           if (_titleController.text.isNotEmpty &&
                               _descriptionController.text.isNotEmpty) {
-                            final category = _categoryController.text.isNotEmpty
-                                ? _categoryController.text
-                                : 'All';
-
                             newNote.title = _titleController.text;
                             newNote.description = _descriptionController.text;
-                            newNote.category = category;
                             newNote.color = selectedColor.value;
 
                             if (isEditing) {
-                              await _noteController.editNote(
-                                  existingNoteIndex, newNote);
+                              await providerRead.editNote(
+                                  providerRead.existingNoteIndex, newNote);
                             } else {
-                              await _noteController.addNote(newNote);
+                              await providerRead.addNote(newNote);
                             }
 
-                            _loadNotes();
+                            providerRead.loadNotes();
                             Navigator.of(context).pop();
                           } else {
                             Navigator.of(context).pop();

@@ -42,7 +42,6 @@ class _NoteCardState extends State<NoteCard> {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
               return DescriptionScreen(
-                color: Color(widget.color),
                 date: widget.date,
                 description: widget.description,
                 title: widget.title,
