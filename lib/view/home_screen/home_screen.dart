@@ -85,34 +85,54 @@ class _HomeScreenState extends State<HomeScreen> {
                       fontSize: 20,
                       fontWeight: FontWeight.w400)),
             )
-          : ListView.builder(
-              itemCount: _notes.length,
-              itemBuilder: (context, index) {
-                final note = _notes[index];
-                final date = DateFormat.yMMMEd().format(note.date);
-                return NoteCard(
-                  onEditPressed: () {
-                    existingNoteIndex = index;
-                    _addOrEditNote(context, existingNote: note);
-                  },
-                  onDeletePressed: () async {
-                    await _noteController.deleteNote(index);
-                    _loadNotes();
-                  },
-                  description: note.description,
-                  title: note.title,
-                  date: date,
-                  color: note.color,
-                  onRightslide: (p0) async {
-                    await _noteController.deleteNote(index);
-                    _loadNotes();
-                  },
-                  onLeftslide: (p0) {
-                    existingNoteIndex = index;
-                    _addOrEditNote(context, existingNote: note);
-                  },
-                );
-              },
+          : Column(
+              children: [
+                SizedBox(
+                  height: 15,
+                ),
+                // Container(
+                //   height: 50,
+                //   child: ListView.builder(
+                //       scrollDirection: Axis.horizontal,
+                //       itemBuilder: (context, index) {
+                //         return Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: Chip(label: Text("All")),
+                //         );
+                //       }),
+                // ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _notes.length,
+                    itemBuilder: (context, index) {
+                      final note = _notes[index];
+                      final date = DateFormat.yMMMEd().format(note.date);
+                      return NoteCard(
+                        onEditPressed: () {
+                          existingNoteIndex = index;
+                          _addOrEditNote(context, existingNote: note);
+                        },
+                        onDeletePressed: () async {
+                          await _noteController.deleteNote(index);
+                          _loadNotes();
+                        },
+                        description: note.description,
+                        title: note.title,
+                        date: date,
+                        color: note.color,
+                        onRightslide: (p0) async {
+                          await _noteController.deleteNote(index);
+                          _loadNotes();
+                        },
+                        onLeftslide: (p0) {
+                          existingNoteIndex = index;
+                          _addOrEditNote(context, existingNote: note);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white54,
