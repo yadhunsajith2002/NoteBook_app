@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DescriptionScreen extends StatefulWidget {
   DescriptionScreen({
@@ -32,6 +33,22 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
             color: Colors.white,
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: IconButton(
+              onPressed: () {
+                String message = widget.description;
+                String subject = widget.title;
+                Share.share(message, subject: subject);
+              },
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(widget.title,
