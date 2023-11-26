@@ -22,6 +22,7 @@ class Note extends HiveObject {
     required this.date,
     required this.color,
   });
+
   Note.copy(Note other) {
     title = other.title;
     description = other.description;

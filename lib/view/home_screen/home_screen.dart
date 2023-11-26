@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/controller/note_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:todo_app/controller/note_controller/note_controller.dart';
 import 'package:todo_app/model/event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -12,10 +13,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final NoteController _noteController = NoteController();
-  late List<Note> _notes = [];
-  int existingNoteIndex = -1;
-
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _dateController = TextEditingController();
@@ -31,18 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadNotes();
-  }
-
-  Future<void> _loadNotes() async {
-    final notes = await _noteController.getNotes();
-    setState(() {
-      _notes = notes.reversed.toList();
-    });
+    context.read<NoteController>().loadNotes();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("build");
+    var providerWatch = context.watch<NoteController>();
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -71,73 +64,69 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             Icon(
               Icons.edit_outlined,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ],
         ),
         backgroundColor: Colors.black,
       ),
-      body: _notes.isEmpty
-          ? Center(
-              child: Text('No notes yet. Add one!',
-                  style: GoogleFonts.poppins(
+      body: Consumer<NoteController>(
+        builder: (context, providerWatch, _) {
+          return providerWatch.notes.isEmpty
+              ? Center(
+                  child: Text(
+                    'No notes yet. Add one!',
+                    style: GoogleFonts.poppins(
                       color: Colors.grey,
                       fontSize: 20,
-                      fontWeight: FontWeight.w400)),
-            )
-          : Column(
-              children: [
-                SizedBox(
-                  height: 15,
-                ),
-                // Container(
-                //   height: 50,
-                //   child: ListView.builder(
-                //       scrollDirection: Axis.horizontal,
-                //       itemBuilder: (context, index) {
-                //         return Padding(
-                //           padding: const EdgeInsets.all(8.0),
-                //           child: Chip(label: Text("All")),
-                //         );
-                //       }),
-                // ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _notes.length,
-                    itemBuilder: (context, index) {
-                      final note = _notes[index];
-                      final date = DateFormat.yMMMEd().format(note.date);
-                      return NoteCard(
-                        onEditPressed: () {
-                          existingNoteIndex = index;
-                          _addOrEditNote(context, existingNote: note);
-                        },
-                        onDeletePressed: () async {
-                          await _noteController.deleteNote(index);
-                          _loadNotes();
-                        },
-                        description: note.description,
-                        title: note.title,
-                        date: date,
-                        color: note.color,
-                        onRightslide: (p0) async {
-                          await _noteController.deleteNote(index);
-                          _loadNotes();
-                        },
-                        onLeftslide: (p0) {
-                          existingNoteIndex = index;
-                          _addOrEditNote(context, existingNote: note);
-                        },
-                      );
-                    },
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-              ],
-            ),
+                )
+              : Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: providerWatch.notes.length,
+                        itemBuilder: (context, index) {
+                          final note = providerWatch.notes[index];
+                          final date = DateFormat.yMMMEd().format(note.date);
+                          return NoteCard(
+                            onEditPressed: () {
+                              providerWatch.existingNoteIndex = index;
+                              _addOrEditNote(context, existingNote: note);
+                            },
+                            onDeletePressed: () async {
+                              await providerWatch.deleteNote(index);
+                              providerWatch.loadNotes();
+                            },
+                            description: note.description,
+                            title: note.title,
+                            date: date,
+                            color: note.color,
+                            onRightslide: (details) async {
+                              await providerWatch.deleteNote(index);
+                              providerWatch.loadNotes();
+                            },
+                            onLeftslide: (details) {
+                              providerWatch.existingNoteIndex = index;
+                              _addOrEditNote(context, existingNote: note);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white54,
         onPressed: () {
-          existingNoteIndex = -1;
+          providerWatch.existingNoteIndex = -1;
           _addOrEditNote(context);
         },
         child: Icon(
@@ -149,6 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _addOrEditNote(BuildContext ctx, {Note? existingNote}) async {
+    var providerRead = context.read<NoteController>();
+    // var providerwatch = context.watch<NoteController>();
+
     final isEditing = existingNote != null;
     final newNote = isEditing
         ? Note.copy(existingNote)
@@ -158,10 +150,9 @@ class _HomeScreenState extends State<HomeScreen> {
             date: DateTime.now(),
             color: selectedColor.value,
           );
-
+    final dateFormatter = DateFormat('dd-MM-yyyy');
     _titleController.text = newNote.title;
     _descriptionController.text = newNote.description;
-    final dateFormatter = DateFormat('dd-MM-yyyy');
     _dateController.text =
         isEditing ? dateFormatter.format(newNote.date.toLocal()) : '';
 
@@ -211,7 +202,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         border: OutlineInputBorder(), labelText: 'Description'),
                     controller: _descriptionController,
                     onChanged: (value) {
-                      newNote.description = value;
+                      setState(() {
+                        newNote.description = value;
+                      });
                     },
                   ),
                   SizedBox(height: 16.0),
@@ -239,9 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
+                  SizedBox(height: 15),
                   Container(
                     height: 80,
                     child: Wrap(
@@ -261,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Container(
-                              width: index == selectedColorIndex ? 50 : 40,
+                              width: index == selectedColor ? 50 : 40,
                               height: index == selectedColorIndex ? 50 : 40,
                               decoration: BoxDecoration(
                                 color: color,
@@ -279,35 +270,47 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       ElevatedButton(
                         style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.black)),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.black),
+                        ),
                         onPressed: () async {
                           if (_titleController.text.isNotEmpty &&
                               _descriptionController.text.isNotEmpty) {
+                            newNote.title = _titleController.text;
+                            newNote.description = _descriptionController.text;
+                            newNote.color = selectedColor.value;
+
                             if (isEditing) {
-                              await _noteController.editNote(
-                                  existingNoteIndex, newNote);
+                              await providerRead.editNote(
+                                  providerRead.existingNoteIndex, newNote);
                             } else {
-                              await _noteController.addNote(newNote);
+                              await providerRead.addNote(newNote);
                             }
-                            _loadNotes();
+
+                            providerRead.loadNotes();
                             Navigator.of(context).pop();
                           } else {
                             Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(30),
-                                        topRight: Radius.circular(30))),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30),
+                                    topRight: Radius.circular(30),
+                                  ),
+                                ),
                                 padding: EdgeInsets.all(20),
                                 backgroundColor: Colors.grey.shade300,
                                 content: Center(
-                                    child: Text(
-                                  "Please add  details",
-                                  style: TextStyle(fontSize: 18),
-                                ))));
+                                  child: Text(
+                                    "Please add details",
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                            );
                           }
                         },
                         child: Text(isEditing ? 'Save' : 'Add'),
@@ -317,10 +320,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       ElevatedButton(
                         style: ButtonStyle(
-                            foregroundColor:
-                                MaterialStatePropertyAll(Colors.white),
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.black)),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.black),
+                        ),
                         onPressed: () async {
                           Navigator.of(context).pop();
                         },

@@ -42,7 +42,6 @@ class _NoteCardState extends State<NoteCard> {
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
               return DescriptionScreen(
-                color: Color(widget.color),
                 date: widget.date,
                 description: widget.description,
                 title: widget.title,
@@ -138,15 +137,16 @@ class _NoteCardState extends State<NoteCard> {
                                 width: 15,
                               ),
                               IconButton(
-                                  onPressed: () {
-                                    String message = widget.description;
-                                    String subject = widget.title;
-                                    Share.share(message, subject: subject);
-                                  },
-                                  icon: Icon(
-                                    Icons.share,
-                                    color: Colors.black,
-                                  ))
+                                onPressed: () {
+                                  String message = widget.description;
+                                  String subject = widget.title;
+                                  Share.share(message, subject: subject);
+                                },
+                                icon: Icon(
+                                  Icons.share,
+                                  color: Colors.black,
+                                ),
+                              ),
                             ],
                           ),
                         ],
