@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Container(
-                              width: index == selectedColor ? 50 : 40,
+                              width: index == selectedColorIndex ? 50 : 40,
                               height: index == selectedColorIndex ? 50 : 40,
                               decoration: BoxDecoration(
                                 color: color,
@@ -293,24 +293,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             Navigator.of(context).pop();
                           } else {
                             Navigator.of(context).pop();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(30),
-                                    topRight: Radius.circular(30),
-                                  ),
-                                ),
-                                padding: EdgeInsets.all(20),
-                                backgroundColor: Colors.grey.shade300,
-                                content: Center(
-                                  child: Text(
-                                    "Please add details",
-                                    style: TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                              ),
-                            );
+
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Center(
+                                    child: Text(
+                                      "Please add full details!!!",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                  );
+                                });
                           }
                         },
                         child: Text(isEditing ? 'Save' : 'Add'),
