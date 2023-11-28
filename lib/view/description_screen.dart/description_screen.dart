@@ -1,18 +1,22 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 
 class DescriptionScreen extends StatefulWidget {
   DescriptionScreen({
-    super.key,
+    Key? key,
     required this.title,
     required this.description,
     required this.date,
-  });
+    this.imagePaths = const [],
+  }) : super(key: key);
 
   final String title;
   final String description;
   final String date;
+  final List<String> imagePaths;
 
   @override
   State<DescriptionScreen> createState() => _DescriptionScreenState();
@@ -69,6 +73,47 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
                   textAlign: TextAlign.justify,
                   style: GoogleFonts.poppins(
                       color: Colors.grey.shade300, fontSize: 16)),
+              SizedBox(height: 20),
+              // Display images at the bottom
+              if (widget.imagePaths.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Attached Images',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: widget.imagePaths.length,
+                        itemBuilder: (context, index) {
+                          File imageFile = File(widget.imagePaths[index]);
+
+                          if (imageFile.existsSync()) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                imageFile,
+                                width: 80,
+                                height: 80,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          } else {
+                            return SizedBox();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

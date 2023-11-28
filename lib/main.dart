@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_app/controller/add_note_controller/add_note_controller.dart';
 import 'package:todo_app/controller/home_controller/home_controller.dart';
 import 'package:todo_app/controller/note_controller/note_controller.dart';
 import 'package:todo_app/controller/search_controller/search_controller.dart';
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => NoteController()),
         ChangeNotifierProvider(create: (context) => HomeController()),
-        ChangeNotifierProvider(create: (context) => SearchService())
+        ChangeNotifierProvider(create: (context) => SearchService()),
+        ChangeNotifierProvider(create: (context) => AddNoteController())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

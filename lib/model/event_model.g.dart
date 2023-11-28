@@ -20,7 +20,7 @@ class NoteAdapter extends TypeAdapter<Note> {
       title: fields[0] as String,
       description: fields[1] as String,
       date: fields[2] as DateTime,
-      color: fields[3] as int,
+      category: fields[3] as String,
     );
   }
 
@@ -35,7 +35,7 @@ class NoteAdapter extends TypeAdapter<Note> {
       ..writeByte(2)
       ..write(obj.date)
       ..writeByte(3)
-      ..write(obj.color);
+      ..write(obj.category);
   }
 
   @override

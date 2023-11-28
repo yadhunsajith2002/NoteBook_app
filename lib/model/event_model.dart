@@ -14,19 +14,19 @@ class Note extends HiveObject {
   late DateTime date;
 
   @HiveField(3)
-  late int color;
+  late String category; // New field for category
 
   Note({
     required this.title,
     required this.description,
     required this.date,
-    required this.color,
+    required this.category, // Updated field for category
   });
 
   Note.copy(Note other) {
     title = other.title;
     description = other.description;
     date = other.date;
-    color = other.color;
+    category = other.category; // Updated field for category
   }
 }

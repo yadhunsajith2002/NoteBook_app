@@ -13,7 +13,6 @@ class NoteCard extends StatefulWidget {
     required this.description,
     required this.title,
     required this.date,
-    required this.color,
     this.onRightslide,
     this.onLeftslide,
   });
@@ -26,7 +25,6 @@ class NoteCard extends StatefulWidget {
   final String description;
   final String title;
   final String date;
-  final int color;
 
   @override
   State<NoteCard> createState() => _NoteCardState();
@@ -72,7 +70,7 @@ class _NoteCardState extends State<NoteCard> {
           ),
           child: Card(
             elevation: 20,
-            color: Color(widget.color),
+            color: Colors.grey.shade400,
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
