@@ -4,6 +4,7 @@ import 'package:todo_app/controller/note_controller/note_controller.dart';
 import 'package:todo_app/model/event_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/view/widgets/loading_shimmer.dart';
 
 import 'package:todo_app/view/widgets/note_Card.dart';
 
@@ -29,7 +30,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     context.read<NoteController>().loadNotes();
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        isloading = false;
+      });
+    });
   }
+
+  bool isloading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -63,55 +71,65 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Consumer<NoteController>(
         builder: (context, providerWatch, _) {
-          return providerWatch.notes.isEmpty
-              ? Center(
-                  child: Text(
-                    'No notes yet. Add one!',
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                )
-              : Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: providerWatch.notes.length,
-                        itemBuilder: (context, index) {
-                          final note = providerWatch.notes[index];
-                          final date = DateFormat.yMMMEd().format(note.date);
-                          return NoteCard(
-                            onEditPressed: () {
-                              providerWatch.existingNoteIndex = index;
-                              _addOrEditNote(context, existingNote: note);
-                            },
-                            onDeletePressed: () async {
-                              await providerWatch.deleteNote(index);
-                              providerWatch.loadNotes();
-                            },
-                            description: note.description,
-                            title: note.title,
-                            date: date,
-                            color: note.color,
-                            onRightslide: (details) async {
-                              await providerWatch.deleteNote(index);
-                              providerWatch.loadNotes();
-                            },
-                            onLeftslide: (details) {
-                              providerWatch.existingNoteIndex = index;
-                              _addOrEditNote(context, existingNote: note);
-                            },
-                          );
-                        },
+          return isloading
+              ? ListView.separated(
+                  itemBuilder: (context, index) {
+                    return SizedBox(height: 15);
+                  },
+                  separatorBuilder: (context, index) {
+                    return ShimmerLoading();
+                  },
+                  itemCount: 10)
+              : providerWatch.notes.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No notes yet. Add one!',
+                        style: GoogleFonts.poppins(
+                          color: Colors.grey,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
-                  ],
-                );
+                    )
+                  : Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: providerWatch.notes.length,
+                            itemBuilder: (context, index) {
+                              final note = providerWatch.notes[index];
+                              final date =
+                                  DateFormat.yMMMEd().format(note.date);
+                              return NoteCard(
+                                onEditPressed: () {
+                                  providerWatch.existingNoteIndex = index;
+                                  _addOrEditNote(context, existingNote: note);
+                                },
+                                onDeletePressed: () async {
+                                  await providerWatch.deleteNote(index);
+                                  providerWatch.loadNotes();
+                                },
+                                description: note.description,
+                                title: note.title,
+                                date: date,
+                                color: note.color,
+                                onRightslide: (details) async {
+                                  await providerWatch.deleteNote(index);
+                                  providerWatch.loadNotes();
+                                },
+                                onLeftslide: (details) {
+                                  providerWatch.existingNoteIndex = index;
+                                  _addOrEditNote(context, existingNote: note);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -193,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           borderRadius:
                               BorderRadius.only(topLeft: Radius.circular(60))),
                       child: Padding(
-                        padding: const EdgeInsets.all(25.0),
+                        padding: const EdgeInsets.all(50.0),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: 10,
                                   ),
                                   Container(
-                                    height: 50,
+                                    height: 100,
                                     width:
                                         MediaQuery.of(context).size.width * 0.8,
                                     decoration: BoxDecoration(
@@ -224,13 +242,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                             BorderRadius.circular(20)),
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        horizontal: 10,
+                                      ),
+                                      child: Center(
                                         child: TextField(
+                                          maxLines: 6,
                                           controller: _titleController,
                                           style: TextStyle(color: Colors.black),
                                           decoration: InputDecoration(
+                                              hintStyle: TextStyle(
+                                                  color: Colors.grey.shade400),
                                               border: OutlineInputBorder(
                                                   borderSide: BorderSide.none),
                                               hintText: 'Title'),
@@ -276,11 +297,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               newNote.description = value;
                                             });
                                           },
-                                          maxLines: 5,
+                                          maxLines: 20,
                                           style: TextStyle(color: Colors.black),
                                           decoration: InputDecoration(
+                                              hintText: "Description",
                                               hintStyle: TextStyle(
-                                                  color: Colors.black),
+                                                  color: Colors.grey.shade400),
                                               // hintMaxLines: 5,
                                               border: OutlineInputBorder(
                                                   borderSide: BorderSide.none)),
@@ -302,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: 10,
                                   ),
                                   Container(
-                                    height: 50,
+                                    height: 60,
                                     width:
                                         MediaQuery.of(context).size.width * 0.8,
                                     decoration: BoxDecoration(
@@ -335,6 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style:
                                                 TextStyle(color: Colors.black),
                                             decoration: InputDecoration(
+                                              hintText: "Date",
+                                              hintStyle: TextStyle(
+                                                  color: Colors.grey.shade400),
                                               suffixIcon:
                                                   Icon(Icons.calendar_month),
                                               border: OutlineInputBorder(
@@ -350,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     height: 20,
                                   ),
                                   Text(
-                                    " Choose your Color",
+                                    "  Color",
                                     style: GoogleFonts.poppins(
                                         color: Colors.black,
                                         fontSize: 18,
@@ -386,12 +411,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               child: Container(
                                                 width:
                                                     index == selectedColorIndex
-                                                        ? 50
-                                                        : 40,
+                                                        ? 60
+                                                        : 50,
                                                 height:
                                                     index == selectedColorIndex
-                                                        ? 50
-                                                        : 40,
+                                                        ? 60
+                                                        : 50,
                                                 decoration: BoxDecoration(
                                                   color: color,
                                                   borderRadius:

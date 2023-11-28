@@ -30,7 +30,7 @@ class _ScreenHomeState extends State<ScreenHome> {
             ),
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
               child: GNav(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 rippleColor: Colors.grey[300]!,

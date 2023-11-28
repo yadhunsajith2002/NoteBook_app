@@ -81,12 +81,17 @@ class _NoteCardState extends State<NoteCard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          widget.title,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 23,
-                              fontWeight: FontWeight.bold),
+                        SizedBox(
+                          width: 200,
+                          child: Text(
+                            widget.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                         Row(
                           children: [
