@@ -30,9 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
               autofocus: true,
               controller: searchController,
               onChanged: (value) {
-                // Filter notes based on the search query
                 if (value.isEmpty) {
-                  // If the search query is empty, show recent searches
                   setState(() {});
                 }
                 noteController.filterNotes(value);
@@ -40,7 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               decoration: InputDecoration(
                 hintText: "Search for Notes",
-                suffixIcon: InkWell(
+                prefixIcon: InkWell(
                   onTap: () {
                     noteController.filterNotes(searchController.text);
                     setState(() {});
