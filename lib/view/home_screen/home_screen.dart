@@ -47,27 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        elevation: 2,
+        backgroundColor: Colors.black12,
         centerTitle: true,
-        title: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                  text: "Note",
-                  style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold)),
-              TextSpan(
-                  text: " Book",
-                  style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400))
-            ],
-          ),
+        title: Image.asset(
+          "assets/penpad.png",
+          // height: MediaQuery.of(context).size.height * 1,
+          width: MediaQuery.of(context).size.width * 0.3,
         ),
-        backgroundColor: Colors.black,
       ),
       body: Consumer<NoteController>(
         builder: (context, providerWatch, _) {

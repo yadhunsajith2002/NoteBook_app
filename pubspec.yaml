@@ -39,6 +39,7 @@ dependencies:
   hive_flutter: ^1.1.0
   intl: ^0.18.1
   line_icons: ^2.0.3
+  popover: ^0.2.8+2
   provider: ^6.1.1
   share_plus: ^7.2.1
   shared_preferences: ^2.2.2
@@ -53,7 +54,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/Black White Minimalist Logo.jpg"
+  image_path: "assets/penpad.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 # For information on the generic Dart part of this file, see the
@@ -70,9 +71,9 @@ flutter:
     - assets\NOTE BOOK.gif
     - assets\Screenshot 2023-10-09 203817.png
     - assets\Animation - 1700992498783.json
+    - assets\penpad.png
 
     - assets\Black White Minimalist Logo.jpg
-   
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

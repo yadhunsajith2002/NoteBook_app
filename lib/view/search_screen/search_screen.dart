@@ -4,6 +4,9 @@ import 'package:todo_app/controller/note_controller/note_controller.dart';
 import 'package:todo_app/controller/search_controller/search_controller.dart';
 import 'package:todo_app/view/description_screen.dart/description_screen.dart';
 
+import 'package:popover/popover.dart';
+import 'package:todo_app/view/settings_screen/settings_screen.dart';
+
 class SearchScreen extends StatefulWidget {
   SearchScreen({Key? key}) : super(key: key);
 
@@ -38,6 +41,12 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               decoration: InputDecoration(
                 hintText: "Search for Notes",
+                suffixIcon: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SettingsScreen()));
+                    },
+                    icon: Icon(Icons.more_vert)),
                 prefixIcon: InkWell(
                   onTap: () {
                     noteController.filterNotes(searchController.text);
