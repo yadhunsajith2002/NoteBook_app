@@ -31,13 +31,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
               child: Image.asset(
-            "assets/NOTE BOOK.gif",
+            "assets/Black White Minimalist Logo.jpg",
+            height: MediaQuery.of(context).size.height * 0.6,
             width: MediaQuery.of(context).size.width * 0.8,
           )),
         ],

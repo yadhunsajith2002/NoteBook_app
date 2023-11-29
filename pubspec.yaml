@@ -53,7 +53,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/Screenshot 2023-10-09 203817.png"
+  image_path: "assets/Black White Minimalist Logo.jpg"
   min_sdk_android: 21 # android min sdk min:16, default 21
 
 # For information on the generic Dart part of this file, see the
@@ -70,6 +70,9 @@ flutter:
     - assets\NOTE BOOK.gif
     - assets\Screenshot 2023-10-09 203817.png
     - assets\Animation - 1700992498783.json
+
+    - assets\Black White Minimalist Logo.jpg
+   
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
