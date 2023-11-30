@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class PrivacyAndPolicy extends StatelessWidget {
   PrivacyAndPolicy({super.key});
   var sizedhght = SizedBox(
@@ -17,7 +18,6 @@ class PrivacyAndPolicy extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: ListView(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             sizedhght,
             Text("Privacy Policy  for PenPad",

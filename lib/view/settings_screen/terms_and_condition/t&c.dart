@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class TermsAndCondition extends StatelessWidget {
   TermsAndCondition({super.key});
 

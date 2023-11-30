@@ -51,11 +51,14 @@ class _DescriptionScreenState extends State<DescriptionScreen> {
         ],
         backgroundColor: Colors.black,
         centerTitle: true,
-        title: Text(widget.title,
-            style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold)),
+        title: Text(
+          widget.title,
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),

@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: Consumer<NoteController>(
-        builder: (context, providerWatch, _) {
+        builder: (context, provider, _) {
           return isloading
               ? ListView.separated(
                   itemBuilder: (context, index) {
@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return ShimmerLoading();
                   },
                   itemCount: 10)
-              : providerWatch.notes.isEmpty
+              : provider.notes.isEmpty
                   ? Center(
                       child: Text(
                         'No notes yet. Add one!',
@@ -84,30 +84,30 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Expanded(
                           child: ListView.builder(
-                            itemCount: providerWatch.notes.length,
+                            itemCount: provider.notes.length,
                             itemBuilder: (context, index) {
-                              final note = providerWatch.notes[index];
+                              final note = provider.notes[index];
                               final date =
                                   DateFormat.yMMMEd().format(note.date);
                               return NoteCard(
                                 onEditPressed: () {
-                                  providerWatch.existingNoteIndex = index;
+                                  provider.existingNoteIndex = index;
                                   _addOrEditNote(context, existingNote: note);
                                 },
                                 onDeletePressed: () async {
-                                  await providerWatch.deleteNote(index);
-                                  providerWatch.loadNotes();
+                                  await provider.deleteNote(index);
+                                  provider.loadNotes();
                                 },
                                 description: note.description,
                                 title: note.title,
                                 date: date,
                                 color: note.color,
                                 onRightslide: (details) async {
-                                  await providerWatch.deleteNote(index);
-                                  providerWatch.loadNotes();
+                                  await provider.deleteNote(index);
+                                  provider.loadNotes();
                                 },
                                 onLeftslide: (details) {
-                                  providerWatch.existingNoteIndex = index;
+                                  provider.existingNoteIndex = index;
                                   _addOrEditNote(context, existingNote: note);
                                 },
                               );
