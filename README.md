@@ -1,16 +1,6 @@
-# Notes saving app using Hive Database
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot 2024-01-11 180012](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/71e0dd3b-6f48-4fcc-b4de-51ecf0e7b13f)
+![Screenshot 2024-01-11 180137](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/af4fe856-668c-4f8c-9391-9802672895e3)
+![Screenshot 2024-01-11 180157](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/273657c9-66fa-4249-b29e-2a4f5bcaff35)
+![Screenshot 2024-01-11 180215](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/ec7bb726-45ef-447f-82e5-f0e1ffc5d014)
+![Screenshot 2024-01-11 180304](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/402e8d19-80f2-4f05-bfdf-be536b75494b)
+![Screenshot 2024-01-11 180320](https://github.com/yadhunsajith2002/NoteBook_app/assets/131586318/b29189c6-4c5c-4442-9ba4-202f9e8e2985)
